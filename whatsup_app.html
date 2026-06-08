@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>What's Up? Caribbean</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --navy:#0a1628;--navy2:#0f2044;--ocean:#1a4a7a;--blue:#1e6db5;
+  --aqua:#0ea5a0;--teal:#14b8a6;--coral:#f97048;--gold:#d4a853;
+  --sand:#f5f0e8;--white:#ffffff;--text:#1a2535;--muted:#6b7a8f;
+  --light:#f0f4f8;--border:#e2e8f0;--green:#22c55e;--purple:#7c3aed;
+  --pink:#ec4899;--r:14px;--rs:8px;
+}
+body{font-family:'Poppins',sans-serif;background:#e8edf5;color:var(--text);overflow:hidden;height:100vh;display:flex;justify-content:center;align-items:center;}
+
+#phone{width:390px;height:844px;background:var(--navy);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 50px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.1);border:7px solid #111;}
+#screen{width:100%;height:100%;overflow:hidden;position:relative;background:var(--white);}
+.status-bar{background:var(--navy);color:white;display:flex;justify-content:space-between;align-items:center;padding:10px 22px 6px;font-size:11px;font-weight:500;flex-shrink:0;}
+
+/* SCREEN TRANSITIONS */
+.screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;background:var(--white);transition:opacity 0.22s ease,transform 0.22s ease;}
+.screen.active{display:flex;}
+.screen.slide-in{animation:slideIn 0.25s ease forwards;}
+.screen.slide-back{animation:slideBack 0.25s ease forwards;}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideBack{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+
+.scroll-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.scroll-content::-webkit-scrollbar{width:0;}
+
+/* NAV */
+.bottom-nav{background:var(--white);border-top:0.5px solid var(--border);display:flex;align-items:center;padding:8px 0 14px;flex-shrink:0;z-index:100;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 0;transition:transform 0.15s;}
+.nav-btn:active{transform:scale(0.88);}
+.nav-btn svg{width:22px;height:22px;stroke-width:1.8;stroke:var(--muted);fill:none;transition:stroke 0.2s;}
+.nav-btn span{font-size:9px;font-weight:500;color:var(--muted);transition:color 0.2s;}
+.nav-btn.active svg{stroke:var(--teal);}
+.nav-btn.active span{color:var(--teal);font-weight:700;}
+
+/* CARDS */
+.card{background:var(--white);border-radius:var(--r);border:0.5px solid var(--border);overflow:hidden;margin-bottom:12px;transition:transform 0.15s,box-shadow 0.15s;cursor:pointer;}
+.card:active{transform:scale(0.98);}
+.card-body{padding:12px 14px;}
+.card-body h3{font-size:14px;font-weight:600;margin-bottom:3px;}
+.card-body p{font-size:12px;color:var(--muted);line-height:1.5;}
+.card-meta{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+
+/* BADGES */
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+.b-teal{background:#e0f7f6;color:#0a8c87;}
+.b-coral{background:#fef0ec;color:#c4532a;}
+.b-gold{background:#fef9ec;color:#a07820;}
+.b-navy{background:#e8edf5;color:#1a2562;}
+.b-green{background:#dcfce7;color:#166534;}
+.b-purple{background:#f3e8ff;color:#6d28d9;}
+.b-white{background:rgba(255,255,255,0.92);color:var(--navy);}
+
+/* SECTIONS */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.sec-title{font-size:15px;font-weight:700;color:var(--text);}
+.sec-link{font-size:12px;color:var(--teal);font-weight:600;cursor:pointer;}
+
+/* PILLS */
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding:0 0 6px;margin-bottom:14px;}
+.filter-row::-webkit-scrollbar{display:none;}
+.pill{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--white);color:var(--muted);transition:all 0.18s;}
+.pill.active{background:var(--navy);color:white;border-color:var(--navy);}
+.pill:active{transform:scale(0.94);}
+
+/* SEARCH */
+.search-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.13);border-radius:var(--rs);padding:10px 14px;margin-top:10px;border:0.5px solid rgba(255,255,255,0.15);}
+.search-bar input{background:none;border:none;outline:none;color:white;font-size:13px;flex:1;font-family:'Poppins',sans-serif;}
+.search-bar input::placeholder{color:rgba(255,255,255,0.45);}
+
+/* BUTTONS */
+.btn{padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Poppins',sans-serif;transition:transform 0.15s,opacity 0.15s;}
+.btn:active{transform:scale(0.97);opacity:0.9;}
+.btn-teal{background:var(--teal);color:white;}
+.btn-navy{background:var(--navy);color:white;}
+.btn-coral{background:var(--coral);color:white;}
+.btn-outline{background:none;border:0.5px solid var(--border);color:var(--text);}
+.btn-full{width:100%;padding:14px;border-radius:var(--rs);font-size:14px;font-weight:700;text-align:center;}
+.btn-ghost{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.2);color:white;font-family:'Poppins',sans-serif;cursor:pointer;border-radius:var(--rs);font-size:11px;font-weight:600;padding:8px 12px;transition:background 0.15s;}
+.btn-ghost:active{background:rgba(255,255,255,0.22);}
+
+/* ISLAND CHIP */
+.island-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:white;cursor:pointer;border:0.5px solid rgba(255,255,255,0.2);transition:background 0.15s;}
+.island-chip:active{background:rgba(255,255,255,0.25);}
+
+/* BACK BTN */
+.back-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:5px;color:white;font-size:13px;font-weight:500;font-family:'Poppins',sans-serif;margin-bottom:8px;padding:0;opacity:0.85;}
+.back-btn:active{opacity:0.6;}
+
+/* HSCROLL */
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;}
+.hscroll::-webkit-scrollbar{display:none;}
+.hcard{flex-shrink:0;width:165px;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--border);cursor:pointer;transition:transform 0.15s;}
+.hcard:active{transform:scale(0.96);}
+.hcard-img{width:100%;height:105px;position:relative;display:flex;align-items:flex-end;padding:8px;}
+.hcard-body{padding:9px 11px;}
+.hcard-body h4{font-size:12px;font-weight:700;margin-bottom:2px;}
+.hcard-body p{font-size:10px;color:var(--muted);}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--light);border-radius:var(--rs);padding:12px 14px;}
+.stat-card .val{font-size:21px;font-weight:700;color:var(--navy);}
+.stat-card .lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px;}
+
+/* LIST ROW */
+.list-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.list-row:active{background:var(--light);}
+.list-row:last-child{border-bottom:none;}
+
+/* GRADIENTS */
+.g1{background:linear-gradient(135deg,#1a4a7a,#0ea5a0);}
+.g2{background:linear-gradient(135deg,#7c3aed,#ec4899);}
+.g3{background:linear-gradient(135deg,#f97048,#d4a853);}
+.g4{background:linear-gradient(135deg,#059669,#14b8a6);}
+.g5{background:linear-gradient(135deg,#1e6db5,#7c3aed);}
+.g6{background:linear-gradient(135deg,#dc2626,#f97048);}
+.g7{background:linear-gradient(160deg,#0a1628,#1a4a7a,#0ea5a0);}
+.g8{background:linear-gradient(135deg,#0a1628,#0ea5a0);}
+
+/* FORMS */
+.form-group{margin-bottom:13px;}
+.form-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.6px;}
+.form-input{width:100%;padding:11px 13px;border:0.5px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:'Poppins',sans-serif;outline:none;color:var(--text);background:var(--white);transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--teal);}
+textarea.form-input{resize:none;}
+
+/* MODAL */
+.modal-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:300;display:none;align-items:flex-end;transition:opacity 0.2s;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:white;border-radius:22px 22px 0 0;padding:20px 18px;width:100%;max-height:82%;overflow-y:auto;animation:sheetUp 0.28s ease forwards;}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0.5;}to{transform:translateY(0);opacity:1;}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+
+/* AI BUBBLE */
+.ai-bubble{background:linear-gradient(135deg,#0f2044,#0ea5a0);border-radius:var(--r);padding:13px 14px;margin-bottom:14px;color:white;}
+.ai-label{font-size:10px;font-weight:700;letter-spacing:1px;opacity:0.75;margin-bottom:5px;text-transform:uppercase;}
+
+/* SPONSOR */
+.sponsor-bar{background:linear-gradient(135deg,#0a1628,#1a2535);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:11px;}
+
+/* NEWS */
+.news-card{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.news-card:active{opacity:0.8;}
+.news-img{width:74px;height:74px;border-radius:var(--rs);flex-shrink:0;}
+.news-tag{font-size:10px;font-weight:700;color:var(--teal);margin-bottom:3px;}
+.news-body h4{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px;}
+.news-body p{font-size:11px;color:var(--muted);}
+
+/* YT */
+.yt-card{background:var(--navy);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.yt-thumb{width:100%;height:155px;display:flex;align-items:center;justify-content:center;position:relative;}
+.yt-play{width:52px;height:52px;background:rgba(220,38,38,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;}
+.yt-play:active{transform:scale(0.9);}
+.yt-info{padding:12px 14px;color:white;}
+.live-dot{display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:6px;}
+.live-pulse{width:6px;height:6px;background:white;border-radius:50%;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.25;}}
+
+/* DEAL CARD */
+.deal-card{background:var(--white);border-radius:var(--r);border:0.5px solid var(--border);padding:13px;display:flex;gap:11px;margin-bottom:10px;align-items:center;cursor:pointer;transition:transform 0.15s;}
+.deal-card:active{transform:scale(0.97);}
+.deal-icon{width:50px;height:50px;border-radius:var(--rs);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+
+/* MELEE */
+.melee-card{background:var(--white);border-radius:var(--r);border:0.5px solid var(--border);padding:13px;margin-bottom:10px;}
+.melee-tag-lbl{font-size:10px;font-weight:700;color:var(--coral);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+.melee-text{font-size:13px;line-height:1.6;}
+.melee-meta{display:flex;align-items:center;gap:10px;margin-top:8px;}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;}
+.cal-day{font-size:11px;padding:6px 0;border-radius:6px;cursor:pointer;transition:background 0.15s;}
+.cal-day.hdr{font-weight:700;color:var(--muted);font-size:10px;}
+.cal-day.booked{background:var(--teal);color:white;font-weight:600;}
+.cal-day.blocked{background:#fee2e2;color:#dc2626;font-weight:600;}
+.cal-day.today{border:1.5px solid var(--navy);font-weight:700;}
+
+/* ONBOARD */
+.ob-hero{height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;flex-shrink:0;position:relative;overflow:hidden;}
+.logo-mark{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:white;letter-spacing:-1px;}
+.logo-tagline{font-size:11px;color:rgba(255,255,255,0.65);letter-spacing:2.5px;text-transform:uppercase;margin-top:5px;}
+.tagline{font-size:14px;color:rgba(255,255,255,0.88);margin-top:14px;line-height:1.6;}
+
+/* DETAIL PAGE */
+.detail-hero{height:220px;position:relative;flex-shrink:0;}
+.detail-hero-img{width:100%;height:100%;object-fit:cover;}
+.detail-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.7));padding:14px 16px;}
+.detail-back{position:absolute;top:14px;left:14px;width:34px;height:34px;background:rgba(0,0,0,0.45);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+
+/* INBOX */
+.inbox-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.inbox-item:active{background:var(--light);}
+.inbox-avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;}
+.inbox-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;flex-shrink:0;}
+
+/* SAVED */
+.saved-tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:all 0.2s;}
+.saved-tab.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+/* RATING */
+.stars{color:#f59e0b;font-size:12px;letter-spacing:1px;}
+
+/* ADMIN STATUS */
+.adm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.d-pending{background:#f59e0b;}
+.d-live{background:#22c55e;}
+.d-rejected{background:#ef4444;}
+
+/* PROGRESS */
+.progress-bar{height:6px;border-radius:3px;background:var(--light);overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:3px;background:var(--teal);transition:width 1s ease;}
+
+/* TOOLTIPS / TOAST */
+.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;font-size:12px;font-weight:600;padding:10px 20px;border-radius:30px;white-space:nowrap;z-index:400;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.toast.show{opacity:1;}
+
+/* SHIMMER */
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+.shimmer{background:linear-gradient(90deg,var(--light) 25%,#e8edf5 50%,var(--light) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+
+.pad{padding:16px 18px;}
+.divider{height:0.5px;background:var(--border);margin:14px 0;}
+</style>
+</head>
+<body>
+<div id="phone">
+<div id="screen">
+<div class="status-bar" id="statusBar"><span>9:41</span><span id="sb-island">SXM · 84°F ☀️</span><span>●●●● WiFi ▮▮▮</span></div>
+
+<!-- ════════════ ONBOARDING ════════════ -->
+<div class="screen active" id="s-onboard">
+  <div class="ob-hero g7">
+    <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(14,165,160,0.12);"></div>
+    <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:rgba(26,74,122,0.25);"></div>
+    <div class="logo-mark">What's Up?</div>
+    <div class="logo-tagline">Caribbean · Your World</div>
+    <div class="tagline">Discover. Book. Experience.<br>Live Local.</div>
+  </div>
+  <div class="scroll-content pad">
+    <div style="margin-bottom:18px;">
+      <div class="sec-title" style="margin-bottom:10px;">Choose your island</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;" id="island-grid">
+        <div class="ob-island" data-code="SXM" data-name="St. Maarten" data-emoji="🏝️" onclick="pickIsland(this)" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">🏝️</div><div style="font-size:12px;font-weight:700;margin-top:4px;">St. Maarten</div><div style="font-size:10px;color:var(--muted);">SXM</div>
+        </div>
+        <div class="ob-island" data-code="EUX" data-name="St. Eustatius" data-emoji="🌋" onclick="pickIsland(this)" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">🌋</div><div style="font-size:12px;font-weight:700;margin-top:4px;">St. Eustatius</div><div style="font-size:10px;color:var(--muted);">EUX · Statia</div>
+        </div>
+        <div class="ob-island" data-code="SAB" data-name="Saba" data-emoji="⛰️" onclick="pickIsland(this)" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">⛰️</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Saba</div><div style="font-size:10px;color:var(--muted);">SAB</div>
+        </div>
+        <div class="ob-island" data-code="SKB" data-name="St. Kitts & Nevis" data-emoji="🌴" onclick="pickIsland(this)" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">🌴</div><div style="font-size:12px;font-weight:700;margin-top:4px;">St. Kitts & Nevis</div><div style="font-size:10px;color:var(--muted);">SKB</div>
+        </div>
+      </div>
+      <div style="margin-top:9px;border:0.5px solid var(--border);border-radius:var(--rs);padding:11px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">🌎</span>
+        <div><div style="font-size:12px;font-weight:600;">More islands coming soon</div><div style="font-size:10px;color:var(--muted);">Anguilla · BVI · Curaçao · Miami · and more</div></div>
+      </div>
+    </div>
+    <div style="margin-bottom:18px;">
+      <div class="sec-title" style="margin-bottom:10px;">I am a...</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;" id="user-type-grid">
+        <div class="ob-user" onclick="pickUserType(this,'local')" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">🏠</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Local Resident</div>
+        </div>
+        <div class="ob-user" onclick="pickUserType(this,'visitor')" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;transition:all 0.2s;">
+          <div style="font-size:24px;">✈️</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Visitor</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:18px;">
+      <div class="sec-title" style="margin-bottom:10px;">I'm interested in...</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;" id="interest-grid">
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">🍽️ Dining</div>
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">🎉 Events</div>
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">🏠 Stays</div>
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">🏷️ Deals</div>
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">📰 News</div>
+        <div class="interest-pill" onclick="toggleInterest(this)" style="border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;">🌶️ Dr. Melee</div>
+      </div>
+    </div>
+    <button class="btn btn-navy btn-full" onclick="go('home')" style="background:linear-gradient(135deg,var(--navy),var(--ocean));font-size:15px;letter-spacing:0.2px;">
+      Discover <span id="ob-island-name">St. Maarten</span> →
+    </button>
+    <div style="text-align:center;margin-top:12px;"><span style="font-size:11px;color:var(--muted);cursor:pointer;" onclick="go('home')">Continue as guest</span></div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ════════════ HOME ════════════ -->
+<div class="screen" id="s-home">
+  <div class="g7" style="padding:14px 18px 18px;flex-shrink:0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;">
+      <div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;">Good morning</div>
+        <div style="font-size:21px;font-weight:700;color:white;" id="home-title">What's Up, SXM? 🌴</div>
+      </div>
+      <div class="island-chip" onclick="openModal('m-island')">🏝️ <span id="hdr-code">SXM</span> ▾</div>
+    </div>
+    <div class="search-bar" onclick="showToast('Search coming in Phase 2!')">
+      <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input placeholder="Search restaurants, events, stays..." readonly>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;overflow-x:auto;padding-bottom:2px;">
+      <div class="btn-ghost" onclick="go('dine')">🍽️<br><span style="font-size:10px;">Dine</span></div>
+      <div class="btn-ghost" onclick="go('events')">🎉<br><span style="font-size:10px;">Events</span></div>
+      <div class="btn-ghost" onclick="go('stay')">🏠<br><span style="font-size:10px;">Stay</span></div>
+      <div class="btn-ghost" onclick="go('deals')">🏷️<br><span style="font-size:10px;">Deals</span></div>
+      <div class="btn-ghost" onclick="go('news')">📰<br><span style="font-size:10px;">News</span></div>
+      <div class="btn-ghost" onclick="go('melee')">🌶️<br><span style="font-size:10px;">Melee</span></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="ai-bubble">
+        <div class="ai-label">✨ AI Pick for Tonight</div>
+        <p style="font-size:12px;line-height:1.6;">Ocean breeze is perfect tonight — 78°F with a light easterly. Head to <strong>Karakter Beach Bar</strong> for sunset cocktails at 6pm, then <strong>Le Pressoir</strong> for dinner. Live jazz at Sonesta Maho from 9pm. 🎶</p>
+      </div>
+      <div class="sponsor-bar">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(212,168,83,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🍺</div>
+        <div style="flex:1;"><div style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;">Sponsored</div><div style="font-size:13px;font-weight:600;color:white;">Tonight's Featured Drink</div><div style="font-size:11px;color:rgba(255,255,255,0.55);">Carib Lager — Ice Cold at Sunset Grille</div></div>
+        <span style="font-size:11px;color:var(--teal);font-weight:600;">View →</span>
+      </div>
+      <div class="sec-hdr"><span class="sec-title">🎉 Tonight on SXM</span><span class="sec-link" onclick="go('events')">See all</span></div>
+      <div class="hscroll">
+        <div class="hcard" onclick="go('events')"><div class="hcard-img g2"><span class="badge b-white" style="position:absolute;top:7px;left:7px;">Tonight</span></div><div class="hcard-body"><h4>Sunset DJ Night</h4><p>Maho Beach · 8pm</p><p style="color:var(--teal);font-weight:700;font-size:11px;margin-top:3px;">Free Entry</p></div></div>
+        <div class="hcard" onclick="go('events')"><div class="hcard-img g3"><span class="badge b-white" style="position:absolute;top:7px;left:7px;">Tonight</span></div><div class="hcard-body"><h4>Food & Wine Fest</h4><p>Grand Case · 7pm</p><p style="color:var(--coral);font-weight:700;font-size:11px;margin-top:3px;">$45/person</p></div></div>
+        <div class="hcard" onclick="go('events')"><div class="hcard-img g5"><span class="badge b-white" style="position:absolute;top:7px;left:7px;">Sat</span></div><div class="hcard-body"><h4>Heritage Night</h4><p>Philipsburg · 6pm</p><p style="color:var(--green);font-weight:700;font-size:11px;margin-top:3px;">Free</p></div></div>
+      </div>
+      <div class="sec-hdr"><span class="sec-title">🍽️ Where to Dine</span><span class="sec-link" onclick="go('dine')">See all</span></div>
+      <div class="hscroll">
+        <div class="hcard" onclick="go('rest-detail')"><div class="hcard-img g1"><span class="badge b-gold" style="position:absolute;top:7px;left:7px;">⭐ 4.8</span></div><div class="hcard-body"><h4>Le Pressoir</h4><p>French · Grand Case</p><p style="color:var(--muted);font-size:10px;margin-top:3px;">$$$$</p></div></div>
+        <div class="hcard" onclick="go('dine')"><div class="hcard-img g4"><span class="badge b-teal" style="position:absolute;top:7px;left:7px;">⭐ 4.6</span></div><div class="hcard-body"><h4>Karakter Beach</h4><p>Caribbean · Simpson Bay</p><p style="color:var(--muted);font-size:10px;margin-top:3px;">$$</p></div></div>
+        <div class="hcard" onclick="go('dine')"><div class="hcard-img g6"><span class="badge b-coral" style="position:absolute;top:7px;left:7px;">🔥 Hot</span></div><div class="hcard-body"><h4>Temptation</h4><p>International · Cupecoy</p><p style="color:var(--muted);font-size:10px;margin-top:3px;">$$$$</p></div></div>
+      </div>
+      <div class="sec-hdr"><span class="sec-title">🏠 Stay Local</span><span class="sec-link" onclick="go('stay')">See all</span></div>
+      <div class="card" onclick="go('stay-detail')">
+        <div style="height:118px;position:relative;" class="g8"><span class="badge b-white" style="position:absolute;bottom:9px;left:10px;">⭐ 4.9 · Superhost</span></div>
+        <div class="card-body"><h3>Oceanview Villa — Orient Bay</h3><p>Private pool · 3BR · 2 min to beach</p><div class="card-meta"><span class="badge b-teal">$250/night</span><span style="font-size:11px;color:var(--muted);">📍 Orient Bay</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Book</button></div></div>
+      </div>
+      <div class="sec-hdr"><span class="sec-title">📰 Latest News</span><span class="sec-link" onclick="go('news')">See all</span></div>
+      <div class="news-card" onclick="go('news')"><div class="news-img g1"></div><div class="news-body"><div class="news-tag">SXM LOCAL</div><h4>New Ferry Terminal Opens at Oyster Pond</h4><p>2 hours ago · What's Up? News</p></div></div>
+      <div class="news-card" onclick="go('news')"><div class="news-img g3"></div><div class="news-body"><div class="news-tag">CARIBBEAN</div><h4>Hurricane Season Forecast: Key Updates</h4><p>4 hours ago · Regional</p></div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ NEWS ════════════ -->
+<div class="screen" id="s-news">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('home')">← Back</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1 style="color:white;font-size:20px;font-weight:700;">News & Video</h1>
+      <div class="island-chip" style="font-size:11px;">📍 <span class="cur-island">SXM</span></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="yt-card">
+        <div class="yt-thumb g7">
+          <div class="yt-play" onclick="showToast('Opening YouTube live stream...')">
+            <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+          <div style="position:absolute;top:10px;left:10px;"><div class="live-dot"><div class="live-pulse"></div>LIVE</div></div>
+          <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.5);color:white;font-size:10px;padding:2px 8px;border-radius:4px;">1,240 watching</div>
+        </div>
+        <div class="yt-info">
+          <h4 style="font-size:14px;font-weight:700;">What's Up? SXM — Morning Show</h4>
+          <p style="font-size:11px;opacity:0.65;margin-top:3px;">Live now · YouTube Channel</p>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn btn-coral" style="padding:8px 14px;font-size:12px;border-radius:6px;flex:1;" onclick="showToast('Opening YouTube...')">Watch Live →</button>
+            <button class="btn-ghost" style="padding:8px 14px;font-size:12px;border-radius:6px;" onclick="showToast('Archive loaded!')">📁 Archive</button>
+          </div>
+        </div>
+      </div>
+      <div class="filter-row" id="news-filter">
+        <div class="pill active">All</div><div class="pill">SXM Local</div><div class="pill">Caribbean</div><div class="pill">International</div><div class="pill">Business</div><div class="pill">Sports</div>
+      </div>
+      <div class="news-card"><div class="news-img g1"></div><div class="news-body"><div class="news-tag">SXM LOCAL</div><h4>New Ferry Terminal Opens at Oyster Pond</h4><p>2 hours ago · What's Up? News</p></div></div>
+      <div class="news-card"><div class="news-img g3"></div><div class="news-body"><div class="news-tag">CARIBBEAN</div><h4>Hurricane Season Forecast: Key Updates</h4><p>4 hours ago · Regional</p></div></div>
+      <div class="news-card"><div class="news-img g5"></div><div class="news-body"><div class="news-tag">BUSINESS</div><h4>Tourism Revenue Up 18% in Q1 2026</h4><p>6 hours ago · Economy</p></div></div>
+      <div class="news-card"><div class="news-img g2"></div><div class="news-body"><div class="news-tag">INTERNATIONAL</div><h4>Caribbean Leaders Summit Concludes in Barbados</h4><p>Yesterday · Regional Politics</p></div></div>
+      <div class="news-card"><div class="news-img g4"></div><div class="news-body"><div class="news-tag">SXM LOCAL</div><h4>Simpson Bay Lagoon Clean-Up Initiative Launches</h4><p>Yesterday · Environment</p></div></div>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:12px;">📺 Past Episodes</div>
+      <div class="yt-card" style="margin-bottom:10px;cursor:pointer;" onclick="showToast('Opening episode...')">
+        <div class="yt-thumb g5" style="height:90px;"><div class="yt-play" style="width:34px;height:34px;"><svg width="13" height="13" fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+        <div class="yt-info" style="padding:10px 12px;"><h4 style="font-size:12px;">Interview: Tourism Minister on 2026 Plans</h4><p style="font-size:10px;opacity:0.65;">3 days ago · 28 min</p></div>
+      </div>
+      <div class="yt-card" style="cursor:pointer;" onclick="showToast('Opening episode...')">
+        <div class="yt-thumb g3" style="height:90px;"><div class="yt-play" style="width:34px;height:34px;"><svg width="13" height="13" fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>
+        <div class="yt-info" style="padding:10px 12px;"><h4 style="font-size:12px;">SXM Business Spotlight: Local Entrepreneurs</h4><p style="font-size:10px;opacity:0.65;">5 days ago · 41 min</p></div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn active" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ DINE ════════════ -->
+<div class="screen" id="s-dine">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('home')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Where to Dine</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">Reserve exceptional dining on SXM</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="filter-row"><div class="pill active">All</div><div class="pill">Ocean View</div><div class="pill">Fine Dining</div><div class="pill">Casual</div><div class="pill">Romantic</div><div class="pill">Family</div></div>
+      <div class="card" onclick="go('rest-detail')">
+        <div style="height:130px;position:relative;" class="g1"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.8</span><span class="badge b-gold" style="position:absolute;top:9px;right:9px;">Fine Dining</span></div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;"><h3>Le Pressoir</h3><span style="font-size:12px;color:var(--muted);">$$$$</span></div>
+          <p>Authentic French cuisine in a restored Creole plantation house. Award-winning wine cellar.</p>
+          <div class="card-meta"><span class="badge b-navy">📍 Grand Case</span><span class="badge b-green">Open Now</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('m-booking')">
+        <div style="height:130px;position:relative;" class="g4"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.6</span><span class="badge b-coral" style="position:absolute;top:9px;right:9px;">Beach Bar</span></div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;"><h3>Karakter Beach Bar</h3><span style="font-size:12px;color:var(--muted);">$$</span></div>
+          <p>Feet-in-the-sand dining. Fresh seafood, tropical cocktails, and killer sunsets every evening.</p>
+          <div class="card-meta"><span class="badge b-navy">📍 Simpson Bay</span><span class="badge b-green">Open Now</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('m-booking')">
+        <div style="height:130px;position:relative;" class="g6"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.9</span><span class="badge b-coral" style="position:absolute;top:9px;right:9px;">🔥 Most Loved</span></div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;"><h3>Temptation Restaurant</h3><span style="font-size:12px;color:var(--muted);">$$$$</span></div>
+          <p>Chef Dino Jagtiani's signature New World Cuisine. St. Maarten's most celebrated restaurant.</p>
+          <div class="card-meta"><span class="badge b-navy">📍 Cupecoy</span><span class="badge b-green">Open Now</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('m-booking')">
+        <div style="height:130px;position:relative;" class="g3"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.5</span><span class="badge b-teal" style="position:absolute;top:9px;right:9px;">Seafood</span></div>
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:start;"><h3>Ocean Lounge</h3><span style="font-size:12px;color:var(--muted);">$$$</span></div>
+          <p>Elevated seafood dining with panoramic Great Bay views. Sunday brunch is legendary.</p>
+          <div class="card-meta"><span class="badge b-navy">📍 Philipsburg</span><span class="badge b-green">Open Now</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div>
+        </div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn active" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ RESTAURANT DETAIL ════════════ -->
+<div class="screen" id="s-rest-detail">
+  <div style="height:220px;position:relative;flex-shrink:0;" class="g1">
+    <button class="detail-back" onclick="go('dine')" style="background:rgba(0,0,0,0.45);border:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;position:absolute;top:14px;left:14px;">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <button style="background:rgba(0,0,0,0.45);border:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;position:absolute;top:14px;right:14px;" onclick="showToast('Saved to favorites ♡')">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));padding:14px 16px;">
+      <div style="color:white;font-size:19px;font-weight:700;font-family:'Playfair Display',serif;">Le Pressoir</div>
+      <div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:2px;">French Cuisine · Grand Case, St. Maarten</div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+        <div class="stars">★★★★★</div>
+        <span style="font-size:13px;font-weight:700;">4.8</span>
+        <span style="font-size:12px;color:var(--muted);">(247 reviews)</span>
+        <span class="badge b-green" style="margin-left:auto;">Open · Closes 10pm</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+        <span class="badge b-gold">Fine Dining</span>
+        <span class="badge b-navy">Romantic</span>
+        <span class="badge b-purple">Award-Winning</span>
+        <span class="badge b-teal">$$$$</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">An award-winning French restaurant set inside a beautifully restored Creole plantation house. Le Pressoir offers an exceptional culinary journey through classical French cuisine with a Caribbean twist, complemented by an outstanding wine cellar featuring over 400 labels.</p>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:12px;">📍 Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:var(--light);border-radius:var(--rs);padding:11px;"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:3px;">Location</div><div style="font-size:12px;font-weight:600;">Grand Case, SXM</div></div>
+        <div style="background:var(--light);border-radius:var(--rs);padding:11px;"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:3px;">Hours</div><div style="font-size:12px;font-weight:600;">6pm – 10pm</div></div>
+        <div style="background:var(--light);border-radius:var(--rs);padding:11px;"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:3px;">Cuisine</div><div style="font-size:12px;font-weight:600;">French</div></div>
+        <div style="background:var(--light);border-radius:var(--rs);padding:11px;"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:3px;">Price</div><div style="font-size:12px;font-weight:600;">$$$$</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:12px;">🍽️ Sample Menu</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div style="background:var(--navy);padding:10px 14px;"><div style="color:rgba(255,255,255,0.6);font-size:10px;text-transform:uppercase;font-weight:700;">Starters</div></div>
+        <div style="padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Foie Gras Terrine</div><div style="font-size:11px;color:var(--muted);">Toasted brioche · fig chutney</div></div><span style="font-size:13px;font-weight:700;">$28</span></div>
+        <div style="padding:12px 14px;display:flex;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Bouillabaisse du Chef</div><div style="font-size:11px;color:var(--muted);">Local seafood · saffron broth</div></div><span style="font-size:13px;font-weight:700;">$32</span></div>
+        <div style="background:var(--navy);padding:10px 14px;"><div style="color:rgba(255,255,255,0.6);font-size:10px;text-transform:uppercase;font-weight:700;">Mains</div></div>
+        <div style="padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Duck Confit</div><div style="font-size:11px;color:var(--muted);">Cherry reduction · pommes sarladaises</div></div><span style="font-size:13px;font-weight:700;">$54</span></div>
+        <div style="padding:12px 14px;display:flex;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Lobster Thermidor</div><div style="font-size:11px;color:var(--muted);">Local Caribbean lobster</div></div><span style="font-size:13px;font-weight:700;">$78</span></div>
+      </div>
+      <button class="btn btn-teal btn-full" onclick="openModal('m-booking')">Reserve a Table →</button>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EXPLORE ════════════ -->
+<div class="screen" id="s-explore">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('home')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Explore SXM</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">Discover everything on the island</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div onclick="go('events')" style="border-radius:var(--r);padding:16px;cursor:pointer;transition:transform 0.15s;background:linear-gradient(135deg,#7c3aed,#ec4899);" class="card" style="border:none;margin:0;">
+          <div style="font-size:26px;margin-bottom:6px;">🎉</div><div style="font-size:14px;font-weight:700;color:white;">Events</div><div style="font-size:11px;color:rgba(255,255,255,0.7);">3 tonight</div>
+        </div>
+        <div onclick="go('deals')" style="border-radius:var(--r);padding:16px;cursor:pointer;transition:transform 0.15s;background:linear-gradient(135deg,#f97048,#d4a853);" class="card" style="border:none;margin:0;">
+          <div style="font-size:26px;margin-bottom:6px;">🏷️</div><div style="font-size:14px;font-weight:700;color:white;">Deals</div><div style="font-size:11px;color:rgba(255,255,255,0.7);">12 active</div>
+        </div>
+        <div onclick="go('stay')" style="border-radius:var(--r);padding:16px;cursor:pointer;transition:transform 0.15s;background:linear-gradient(135deg,#1a4a7a,#0ea5a0);" class="card" style="border:none;margin:0;">
+          <div style="font-size:26px;margin-bottom:6px;">🏠</div><div style="font-size:14px;font-weight:700;color:white;">Stay Local</div><div style="font-size:11px;color:rgba(255,255,255,0.7);">8 available</div>
+        </div>
+        <div onclick="go('melee')" style="border-radius:var(--r);padding:16px;cursor:pointer;transition:transform 0.15s;background:linear-gradient(135deg,#dc2626,#7c3aed);" class="card" style="border:none;margin:0;">
+          <div style="font-size:26px;margin-bottom:6px;">🌶️</div><div style="font-size:14px;font-weight:700;color:white;">Dr. Melee</div><div style="font-size:11px;color:rgba(255,255,255,0.7);">24 new posts</div>
+        </div>
+      </div>
+      <div class="sec-title" style="margin-bottom:12px;">🔥 Trending Now</div>
+      <div class="deal-card"><div class="deal-icon" style="background:#e0f7f6;">🏄</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Surf Lessons — Orient Bay</h4><p style="font-size:11px;color:var(--muted);">Valid this week only</p></div><div style="font-size:20px;font-weight:700;color:var(--coral);">30%</div></div>
+      <div class="deal-card"><div class="deal-icon" style="background:#fef0ec;">🍹</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Happy Hour — Sunset Bar</h4><p style="font-size:11px;color:var(--muted);">Daily 5–7pm</p></div><div style="font-size:16px;font-weight:700;color:var(--coral);">2-4-1</div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn active" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ STAY ════════════ -->
+<div class="screen" id="s-stay">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('home')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Stay Local 🏠</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">Book local. Stay easy.</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="filter-row"><div class="pill active">All</div><div class="pill">Villa</div><div class="pill">Apartment</div><div class="pill">Guest House</div><div class="pill">Unique</div></div>
+      <div class="card" onclick="go('stay-detail')">
+        <div style="height:145px;position:relative;" class="g8"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.9 · Superhost</span><span class="badge b-teal" style="position:absolute;top:9px;right:9px;">Villa</span></div>
+        <div class="card-body"><h3>Oceanview Villa — Orient Bay</h3><p>Private pool · 3BR · 2 min walk to beach · Full kitchen · AC throughout</p><div class="card-meta"><span class="badge b-teal">$250/night</span><span style="font-size:11px;color:var(--muted);">📍 Orient Bay</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();go('stay-detail')">Book</button></div></div>
+      </div>
+      <div class="card" onclick="openModal('m-booking')">
+        <div style="height:145px;position:relative;" class="g5"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.7</span><span class="badge b-gold" style="position:absolute;top:9px;right:9px;">Apartment</span></div>
+        <div class="card-body"><h3>Hillside Studio — Philipsburg</h3><p>Modern studio with harbour view · Walking distance to town · Newly renovated</p><div class="card-meta"><span class="badge b-teal">$95/night</span><span style="font-size:11px;color:var(--muted);">📍 Philipsburg</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Book</button></div></div>
+      </div>
+      <div class="card" onclick="openModal('m-booking')">
+        <div style="height:145px;position:relative;" class="g4"><span class="badge b-white" style="position:absolute;bottom:9px;left:9px;">⭐ 4.8</span><span class="badge b-coral" style="position:absolute;top:9px;right:9px;">Guest House</span></div>
+        <div class="card-body"><h3>Ti Kay Creole Guest House</h3><p>Authentic Creole cottage · 2BR · Garden · 5 min from Maho Beach</p><div class="card-meta"><span class="badge b-teal">$130/night</span><span style="font-size:11px;color:var(--muted);">📍 Cole Bay</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Book</button></div></div>
+      </div>
+      <div style="background:var(--navy);border-radius:var(--r);padding:14px;margin-top:4px;"><div style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">🔐 Coming Soon</div><div style="font-size:14px;font-weight:700;color:white;margin-bottom:4px;">Smart Lock Access</div><div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;">Book & receive a QR or PIN. Unlock your door privately — no key handoff needed.</div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn active" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ STAY DETAIL ════════════ -->
+<div class="screen" id="s-stay-detail">
+  <div style="height:230px;position:relative;flex-shrink:0;" class="g8">
+    <button onclick="go('stay')" style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,0.45);border:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <button style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.45);border:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showToast('Saved ♡')">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.75));padding:14px 16px;">
+      <div style="color:white;font-size:18px;font-weight:700;">Oceanview Villa</div>
+      <div style="color:rgba(255,255,255,0.8);font-size:12px;">Orient Bay, St. Maarten</div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div><div class="stars">★★★★★</div><span style="font-size:12px;color:var(--muted);margin-left:5px;">4.9 · 84 reviews · Superhost</span></div>
+        <div style="font-size:18px;font-weight:700;color:var(--navy);">$250<span style="font-size:12px;font-weight:400;color:var(--muted);">/night</span></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <span class="badge b-teal">🏊 Private Pool</span><span class="badge b-navy">3 Bedrooms</span><span class="badge b-gold">🌊 Ocean View</span><span class="badge b-green">AC Included</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;">This stunning 3-bedroom villa sits just 2 minutes from Orient Bay's famous white sand beach. Enjoy a private infinity pool, fully equipped kitchen, and sweeping ocean views from every room.</p>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:10px;">Amenities</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>🏊</span> Private pool</div>
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>🌐</span> Fast WiFi</div>
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>❄️</span> AC all rooms</div>
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>🚗</span> Free parking</div>
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>🍳</span> Full kitchen</div>
+        <div style="font-size:12px;display:flex;align-items:center;gap:6px;"><span>📺</span> Smart TV</div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:12px;">Host</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:46px;height:46px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">MC</div>
+        <div><div style="font-size:14px;font-weight:600;">Marie-Claire</div><div style="font-size:11px;color:var(--muted);">Superhost · 6 years on What's Up?</div></div>
+        <button class="btn btn-outline" style="margin-left:auto;padding:6px 14px;font-size:12px;" onclick="showToast('Message sent!')">Message</button>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-title" style="margin-bottom:12px;">Availability</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:14px;">
+        <div class="cal-grid">
+          <div class="cal-day hdr">Su</div><div class="cal-day hdr">Mo</div><div class="cal-day hdr">Tu</div><div class="cal-day hdr">We</div><div class="cal-day hdr">Th</div><div class="cal-day hdr">Fr</div><div class="cal-day hdr">Sa</div>
+          <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day">1</div>
+          <div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day booked">8</div>
+          <div class="cal-day booked">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day booked">13</div><div class="cal-day booked">14</div><div class="cal-day blocked">15</div>
+          <div class="cal-day blocked">16</div><div class="cal-day">17</div><div class="cal-day today">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:10px;font-size:10px;"><div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--teal);border-radius:2px;"></div>Booked</div><div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:#fee2e2;border-radius:2px;"></div>Blocked by host</div></div>
+      </div>
+      <button class="btn btn-navy btn-full" onclick="openModal('m-booking')">Request to Book →</button>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EVENTS ════════════ -->
+<div class="screen" id="s-events">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('explore')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Events 🎉</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">What's happening on SXM</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="filter-row"><div class="pill active">Tonight</div><div class="pill">This Week</div><div class="pill">Music</div><div class="pill">Food</div><div class="pill">Culture</div><div class="pill">Sports</div><div class="pill">Family</div></div>
+      <div class="card"><div style="height:120px;position:relative;" class="g2"><span class="badge b-white" style="position:absolute;top:9px;left:9px;">Tonight · 8pm</span></div><div class="card-body"><h3>Sunset DJ Night — Maho Beach</h3><p>Top DJs spinning beach vibes. Free entry. Smart casual dress code.</p><div class="card-meta"><span class="badge b-navy">📍 Maho</span><span class="badge b-green">Free Entry</span><button class="btn btn-outline" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="showToast('Saved ♡')">Save ♡</button></div></div></div>
+      <div class="card"><div style="height:120px;position:relative;" class="g3"><span class="badge b-white" style="position:absolute;top:9px;left:9px;">Tonight · 7pm</span></div><div class="card-body"><h3>Grand Case Food & Wine Festival</h3><p>15+ restaurants, award-winning wines, live acoustic music all evening.</p><div class="card-meta"><span class="badge b-navy">📍 Grand Case</span><span class="badge b-coral">$45/person</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="showToast('Ticket reserved!')">Tickets</button></div></div></div>
+      <div class="card"><div style="height:120px;position:relative;" class="g5"><span class="badge b-white" style="position:absolute;top:9px;left:9px;">Sat · 6pm</span></div><div class="card-body"><h3>Caribbean Heritage Night</h3><p>Traditional food, dance, storytelling. Celebrating island culture for all ages.</p><div class="card-meta"><span class="badge b-navy">📍 Philipsburg</span><span class="badge b-green">Free</span><button class="btn btn-outline" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="showToast('Saved ♡')">Save ♡</button></div></div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn active" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ DEALS ════════════ -->
+<div class="screen" id="s-deals">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('explore')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Deals & Coupons 🏷️</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">Exclusive local offers</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="filter-row"><div class="pill active">All</div><div class="pill">Food</div><div class="pill">Drinks</div><div class="pill">Activities</div><div class="pill">Shopping</div><div class="pill">Nightlife</div></div>
+      <div class="deal-card" onclick="openModal('m-qr')"><div class="deal-icon" style="background:#e0f7f6;">🏄</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Surf Lessons — Orient Bay</h4><p style="font-size:11px;color:var(--muted);">Valid Mon–Fri this week</p><div style="margin-top:4px;"><span class="badge b-teal">Code: SURF30</span></div></div><div style="font-size:22px;font-weight:700;color:var(--coral);">30%</div></div>
+      <div class="deal-card" onclick="openModal('m-qr')"><div class="deal-icon" style="background:#fef0ec;">🍹</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Happy Hour — Sunset Bar</h4><p style="font-size:11px;color:var(--muted);">Daily 5–7pm · Dine-in</p><div style="margin-top:4px;"><span class="badge b-coral">2-for-1 Cocktails</span></div></div><div style="font-size:16px;font-weight:700;color:var(--coral);">2-4-1</div></div>
+      <div class="deal-card" onclick="openModal('m-qr')"><div class="deal-icon" style="background:#fef9ec;">🛍️</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Duty-Free Shopping</h4><p style="font-size:11px;color:var(--muted);">Philipsburg · This weekend</p><div style="margin-top:4px;"><span class="badge b-gold">Code: DUTYFREE</span></div></div><div style="font-size:22px;font-weight:700;color:var(--coral);">20%</div></div>
+      <div class="deal-card" onclick="openModal('m-qr')"><div class="deal-icon" style="background:#dcfce7;">🤿</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Snorkel Tour — Dawn Beach</h4><p style="font-size:11px;color:var(--muted);">2-hr guided, gear included</p><div style="margin-top:4px;"><span class="badge b-green">Scan QR at dock</span></div></div><div style="font-size:22px;font-weight:700;color:var(--coral);">25%</div></div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn active" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ DR MELEE ════════════ -->
+<div class="screen" id="s-melee">
+  <div style="background:linear-gradient(135deg,#7c3aed,#ec4899);padding:14px 18px 14px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('home')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Dr. Melee 🌶️</h1>
+    <p style="color:rgba(255,255,255,0.75);font-size:12px;margin-top:2px;">Anonymous Caribbean talk. Moderated. Safe. Spicy.</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div style="background:#fef9ec;border-radius:var(--rs);padding:10px 12px;margin-bottom:13px;border:0.5px solid #fef3c7;"><div style="font-size:11px;color:#92400e;font-weight:600;">🛡️ All submissions are AI-moderated and human-reviewed before publishing. No personal info. No bullying.</div></div>
+      <div class="melee-card"><div class="melee-tag-lbl">🔥 Island Talk</div><div class="melee-text">Somebody tell me why the road by the airport has been under construction for 3 years and nobody knows what they building??</div><div class="melee-meta"><span class="badge b-gold">📍 SXM</span><span style="font-size:11px;color:var(--muted);">👍 234 &nbsp; 💬 41</span></div></div>
+      <div class="melee-card"><div class="melee-tag-lbl">🍽️ Food Talk</div><div class="melee-text">The new French restaurant in Grand Case charging $80 for a plate that could fit in my hand. Who approving these prices??</div><div class="melee-meta"><span class="badge b-coral">📍 Grand Case</span><span style="font-size:11px;color:var(--muted);">👍 187 &nbsp; 💬 29</span></div></div>
+      <div class="melee-card"><div class="melee-tag-lbl">💡 Government</div><div class="melee-text">Why is it that every summer the electricity goes out but nothing changes? Asking for all of us paying these bills 💡</div><div class="melee-meta"><span class="badge b-navy">📍 SXM</span><span style="font-size:11px;color:var(--muted);">👍 412 &nbsp; 💬 88</span></div></div>
+      <div class="melee-card"><div class="melee-tag-lbl">🎉 Vibes</div><div class="melee-text">Shoutout to whoever organized Maho beach last Friday — best vibe SXM has seen in years. More of that please 🙏🏾</div><div class="melee-meta"><span class="badge b-teal">📍 Maho</span><span style="font-size:11px;color:var(--muted);">👍 891 &nbsp; 💬 52</span></div></div>
+      <div style="background:var(--navy);border-radius:var(--r);padding:16px;margin-top:4px;">
+        <div style="font-size:14px;font-weight:700;color:white;margin-bottom:10px;">Got something to say? 👀</div>
+        <textarea class="form-input" rows="3" id="melee-input" placeholder="Submit anonymously — AI reviews before publishing..." style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white;"></textarea>
+        <div style="display:flex;gap:8px;margin-top:9px;">
+          <select class="form-input" style="flex:1;background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white;font-size:12px;"><option>Island Talk</option><option>Food Talk</option><option>Government</option><option>Nightlife</option><option>Vibes</option></select>
+          <button class="btn btn-coral" style="flex-shrink:0;padding:0 16px;border-radius:6px;font-size:12px;" onclick="submitMelee()">Submit</button>
+        </div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn active" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ PROFILE ════════════ -->
+<div class="screen" id="s-profile">
+  <div style="background:var(--navy);padding:14px 18px 18px;flex-shrink:0;">
+    <h1 style="color:white;font-size:20px;font-weight:700;margin-bottom:12px;">My Account</h1>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:white;">JD</div>
+      <div><div style="color:white;font-size:15px;font-weight:600;">John Doe</div><div style="color:rgba(255,255,255,0.55);font-size:12px;">Local Resident · SXM</div></div>
+      <button class="btn-ghost" style="margin-left:auto;padding:7px 14px;font-size:11px;" onclick="go('inbox')">📬 Inbox <span style="background:var(--coral);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;margin-left:4px;">3</span></button>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="val">3</div><div class="lbl">Reservations</div></div>
+        <div class="stat-card"><div class="val">7</div><div class="lbl">Saved</div></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Quick Links</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div class="list-row" onclick="go('stay')"><span style="font-size:18px;">🏠</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Stay Local</div><div style="font-size:11px;color:var(--muted);">Find & book</div></div><span style="color:var(--muted);">›</span></div>
+        <div class="list-row" onclick="go('deals')"><span style="font-size:18px;">🏷️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Deals</div><div style="font-size:11px;color:var(--muted);">12 active offers</div></div><span style="color:var(--muted);">›</span></div>
+        <div class="list-row" onclick="go('events')"><span style="font-size:18px;">🎉</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Events</div><div style="font-size:11px;color:var(--muted);">3 tonight</div></div><span style="color:var(--muted);">›</span></div>
+        <div class="list-row" onclick="go('melee')"><span style="font-size:18px;">🌶️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Dr. Melee</div><div style="font-size:11px;color:var(--muted);">24 new posts</div></div><span style="color:var(--muted);">›</span></div>
+        <div class="list-row" onclick="go('saved')" style="border-bottom:none;"><span style="font-size:18px;">❤️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Saved Items</div><div style="font-size:11px;color:var(--muted);">7 saved</div></div><span style="color:var(--muted);">›</span></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Business & Admin</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div class="list-row" onclick="go('biz')"><span style="font-size:18px;">💼</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Business Dashboard</div><div style="font-size:11px;color:var(--muted);">Manage listing</div></div><span style="color:var(--muted);">›</span></div>
+        <div class="list-row" onclick="go('admin')" style="border-bottom:none;"><span style="font-size:18px;">🛡️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Admin Center</div><div style="font-size:11px;color:var(--muted);">Platform management</div></div><span style="color:var(--muted);">›</span></div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="go('news')"><svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6Z"/></svg><span>News</span></button>
+    <button class="nav-btn" onclick="go('dine')"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg><span>Dine</span></button>
+    <button class="nav-btn" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Explore</span></button>
+    <button class="nav-btn active" onclick="go('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </div>
+</div>
+
+<!-- ════════════ INBOX ════════════ -->
+<div class="screen" id="s-inbox">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('profile')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Inbox 📬</h1>
+  </div>
+  <div class="scroll-content">
+    <div class="inbox-item"><div class="inbox-avatar" style="background:var(--teal);">LP</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">Le Pressoir — Reservation Confirmed</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Your table for 2 on June 10 at 7:30pm is confirmed.</div><div style="font-size:10px;color:var(--muted);margin-top:3px;">2 hours ago</div></div><div class="inbox-dot"></div></div>
+    <div class="inbox-item"><div class="inbox-avatar" style="background:var(--coral);">MH</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">Marie-Claire — Booking Update</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Your villa booking request has been approved! Check-in June 19.</div><div style="font-size:10px;color:var(--muted);margin-top:3px;">5 hours ago</div></div><div class="inbox-dot"></div></div>
+    <div class="inbox-item"><div class="inbox-avatar" style="background:var(--gold);">WU</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;">What's Up? — New Deal Alert</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">🏷️ 30% off surf lessons at Orient Bay this week only!</div><div style="font-size:10px;color:var(--muted);margin-top:3px;">Yesterday</div></div></div>
+    <div class="inbox-item" style="border-bottom:none;"><div class="inbox-avatar" style="background:var(--purple);">EV</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Events — Tonight Reminder</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">🎉 Sunset DJ Night at Maho starts in 3 hours. Free entry!</div><div style="font-size:10px;color:var(--muted);margin-top:3px;">Yesterday</div></div></div>
+  </div>
+</div>
+
+<!-- ════════════ SAVED ════════════ -->
+<div class="screen" id="s-saved">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('profile')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Saved ❤️</h1>
+  </div>
+  <div style="display:flex;border-bottom:0.5px solid var(--border);flex-shrink:0;">
+    <div class="saved-tab active" id="stab-rest" onclick="switchSavedTab('rest')">Restaurants</div>
+    <div class="saved-tab" id="stab-stay" onclick="switchSavedTab('stay')">Stays</div>
+    <div class="saved-tab" id="stab-events" onclick="switchSavedTab('events')">Events</div>
+    <div class="saved-tab" id="stab-deals" onclick="switchSavedTab('deals')">Deals</div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad" id="saved-content">
+      <div class="card" onclick="go('rest-detail')"><div style="height:100px;" class="g1"></div><div class="card-body"><h3>Le Pressoir</h3><p>French · Grand Case · ⭐ 4.8</p><div class="card-meta"><span class="badge b-navy">$$$$</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div></div></div>
+      <div class="card"><div style="height:100px;" class="g4"></div><div class="card-body"><h3>Karakter Beach Bar</h3><p>Caribbean · Simpson Bay · ⭐ 4.6</p><div class="card-meta"><span class="badge b-navy">$$</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal('m-booking')">Reserve</button></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ BUSINESS DASHBOARD ════════════ -->
+<div class="screen" id="s-biz">
+  <div style="background:var(--navy);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('profile')">← Back</button>
+    <h1 style="color:white;font-size:20px;font-weight:700;">Business Dashboard</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:12px;margin-top:2px;">Le Pressoir · SXM</p>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="val">$4,820</div><div class="lbl">This Month</div></div>
+        <div class="stat-card"><div class="val">38</div><div class="lbl">Bookings</div></div>
+        <div class="stat-card"><div class="val">$241</div><div class="lbl">Commission</div></div>
+        <div class="stat-card"><div class="val">4.8 ⭐</div><div class="lbl">Rating</div></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Revenue Trend</div>
+      <div style="background:var(--light);border-radius:var(--r);padding:14px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;height:80px;gap:6px;padding:0 4px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;"><div style="flex:1;display:flex;align-items:flex-end;"><div style="width:100%;background:var(--teal);border-radius:3px 3px 0 0;height:55%;opacity:0.7;"></div></div><div style="font-size:9px;color:var(--muted);">Mar</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;"><div style="flex:1;display:flex;align-items:flex-end;"><div style="width:100%;background:var(--teal);border-radius:3px 3px 0 0;height:70%;opacity:0.7;"></div></div><div style="font-size:9px;color:var(--muted);">Apr</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;"><div style="flex:1;display:flex;align-items:flex-end;"><div style="width:100%;background:var(--teal);border-radius:3px 3px 0 0;height:80%;opacity:0.7;"></div></div><div style="font-size:9px;color:var(--muted);">May</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;"><div style="flex:1;display:flex;align-items:flex-end;"><div style="width:100%;background:var(--teal);border-radius:3px 3px 0 0;height:100%;"></div></div><div style="font-size:9px;color:var(--muted);font-weight:700;">Jun</div></div>
+        </div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Recent Reservations</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div class="list-row"><div class="adm-dot d-live"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Sarah M. — Party of 4</div><div style="font-size:11px;color:var(--muted);">Tonight · 7:30pm</div></div><span class="badge b-green">Confirmed</span></div>
+        <div class="list-row"><div class="adm-dot d-pending"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">James T. — Party of 2</div><div style="font-size:11px;color:var(--muted);">Tomorrow · 8:00pm</div></div><div style="display:flex;gap:5px;"><button onclick="showToast('Confirmed ✓')" style="padding:4px 10px;font-size:10px;background:var(--green);color:white;border:none;border-radius:4px;cursor:pointer;">✓</button><button onclick="showToast('Declined')" style="padding:4px 10px;font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;">✗</button></div></div>
+        <div class="list-row" style="border-bottom:none;"><div class="adm-dot d-live"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Marie & Pierre — Party of 6</div><div style="font-size:11px;color:var(--muted);">Sat · 7:00pm</div></div><span class="badge b-green">Confirmed</span></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Bookings Calendar — June 2026</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:14px;">
+        <div class="cal-grid">
+          <div class="cal-day hdr">Su</div><div class="cal-day hdr">Mo</div><div class="cal-day hdr">Tu</div><div class="cal-day hdr">We</div><div class="cal-day hdr">Th</div><div class="cal-day hdr">Fr</div><div class="cal-day hdr">Sa</div>
+          <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day">1</div>
+          <div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day booked">8</div>
+          <div class="cal-day booked">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day booked">13</div><div class="cal-day booked">14</div><div class="cal-day blocked">15</div>
+          <div class="cal-day blocked">16</div><div class="cal-day">17</div><div class="cal-day today">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day booked">21</div><div class="cal-day booked">22</div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;"><div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--teal);border-radius:2px;"></div>Booked</div><div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:#fee2e2;border-radius:2px;"></div>Blocked</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;">
+        <button class="btn btn-outline btn-full" style="font-size:12px;padding:12px;" onclick="showToast('Upload feature coming soon!')">+ Add Offer</button>
+        <button class="btn btn-outline btn-full" style="font-size:12px;padding:12px;" onclick="showToast('Photos uploaded!')">📸 Upload Photos</button>
+        <button class="btn btn-outline btn-full" style="font-size:12px;padding:12px;" onclick="go('inbox')">✉️ Messages</button>
+        <button class="btn btn-navy btn-full" style="font-size:12px;padding:12px;" onclick="go('admin')">🛡️ Admin Panel</button>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ ADMIN ════════════ -->
+<div class="screen" id="s-admin">
+  <div style="background:linear-gradient(135deg,#0a1628,#1a2535);padding:14px 18px 12px;flex-shrink:0;">
+    <button class="back-btn" onclick="go('profile')">← Back</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1 style="color:white;font-size:20px;font-weight:700;">🛡️ Admin Center</h1>
+      <span class="badge b-teal">SXM</span>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="pad">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="val">12</div><div class="lbl">Pending</div></div>
+        <div class="stat-card"><div class="val">$18,240</div><div class="lbl">Revenue</div></div>
+        <div class="stat-card"><div class="val">847</div><div class="lbl">Users</div></div>
+        <div class="stat-card"><div class="val">64</div><div class="lbl">Listings</div></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">Approval Queue</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div class="list-row"><div class="adm-dot d-pending"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">New Restaurant: Côte d'Azur</div><div style="font-size:10px;color:var(--muted);">Grand Case · 2h ago</div></div><div style="display:flex;gap:5px;"><button onclick="showToast('Approved ✓')" style="padding:4px 9px;font-size:10px;background:var(--green);color:white;border:none;border-radius:4px;cursor:pointer;">✓</button><button onclick="showToast('Rejected')" style="padding:4px 9px;font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;">✗</button></div></div>
+        <div class="list-row"><div class="adm-dot d-pending"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Dr. Melee #847 · AI Score: 72</div><div style="font-size:10px;color:var(--muted);">Review needed</div></div><div style="display:flex;gap:5px;"><button onclick="showToast('Published!')" style="padding:4px 9px;font-size:10px;background:var(--green);color:white;border:none;border-radius:4px;cursor:pointer;">Pub</button><button onclick="showToast('Rejected')" style="padding:4px 9px;font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;">✗</button></div></div>
+        <div class="list-row"><div class="adm-dot d-pending"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Event: Carnival Preview Night</div><div style="font-size:10px;color:var(--muted);">Island Events Co.</div></div><div style="display:flex;gap:5px;"><button onclick="showToast('Approved ✓')" style="padding:4px 9px;font-size:10px;background:var(--green);color:white;border:none;border-radius:4px;cursor:pointer;">✓</button><button onclick="showToast('Rejected')" style="padding:4px 9px;font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;">✗</button></div></div>
+        <div class="list-row" style="border-bottom:none;"><div class="adm-dot d-pending"></div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Stay: Oceanview Villa Edit</div><div style="font-size:10px;color:var(--muted);">Price update request</div></div><div style="display:flex;gap:5px;"><button onclick="showToast('Approved ✓')" style="padding:4px 9px;font-size:10px;background:var(--green);color:white;border:none;border-radius:4px;cursor:pointer;">✓</button><button onclick="showToast('Rejected')" style="padding:4px 9px;font-size:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:4px;cursor:pointer;">✗</button></div></div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">✨ AI Content Tools</div>
+      <div style="background:linear-gradient(135deg,#0a1628,#1a4a7a);border-radius:var(--r);padding:14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('news')">✍️ Write News</button>
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('event')">🎉 Draft Event</button>
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('push')">📲 Push Notif</button>
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('restaurant')">🍽️ Restaurant Bio</button>
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('deal')">🏷️ Deal Copy</button>
+          <button class="btn-ghost" style="padding:10px;font-size:11px;font-weight:600;text-align:center;border-radius:var(--rs);" onclick="openAI('melee')">🌶️ Mod Melee</button>
+        </div>
+      </div>
+      <div class="sec-title" style="margin-bottom:10px;">🌎 Island Management</div>
+      <div style="background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;">
+        <div class="list-row"><span style="font-size:18px;">🏝️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">St. Maarten (SXM)</div><div style="font-size:11px;color:var(--muted);">64 listings · 847 users</div></div><span class="badge b-green">Live</span></div>
+        <div class="list-row"><span style="font-size:18px;">🌋</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">St. Eustatius (EUX)</div><div style="font-size:11px;color:var(--muted);">8 listings · 120 users</div></div><span class="badge b-gold">Beta</span></div>
+        <div class="list-row"><span style="font-size:18px;">⛰️</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Saba (SAB)</div><div style="font-size:11px;color:var(--muted);">Setup in progress</div></div><span class="badge b-navy">Setup</span></div>
+        <div class="list-row" style="border-bottom:none;"><span style="font-size:18px;">🌆</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Miami, FL 🇺🇸</div><div style="font-size:11px;color:var(--muted);">Priority expansion</div></div><span class="badge b-coral">Planned</span></div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MODALS ════════════ -->
+
+<!-- BOOKING -->
+<div class="modal-overlay" id="m-booking">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:3px;">Reserve a Table</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:15px;">Request-to-book · Restaurant confirms within 2 hours</div>
+    <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="form-group"><label class="form-label">Time</label><select class="form-input"><option>6:00 PM</option><option>6:30 PM</option><option>7:00 PM</option><option selected>7:30 PM</option><option>8:00 PM</option><option>8:30 PM</option></select></div>
+      <div class="form-group"><label class="form-label">Party Size</label><select class="form-input"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" placeholder="John Doe"></div>
+    <div class="form-group"><label class="form-label">Special Requests</label><textarea class="form-input" rows="2" placeholder="Allergies, anniversary, window seat..."></textarea></div>
+    <button class="btn btn-teal btn-full" onclick="submitBooking()">Send Reservation Request →</button>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('m-booking')">Cancel</button>
+  </div>
+</div>
+
+<!-- CONFIRMED -->
+<div class="modal-overlay" id="m-confirmed">
+  <div class="modal-sheet" style="text-align:center;padding:28px 20px;">
+    <div class="modal-handle"></div>
+    <div style="font-size:52px;margin-bottom:12px;">✅</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:6px;">Request Sent!</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">Your reservation request has been sent. You'll receive a confirmation in your inbox shortly.</div>
+    <button class="btn btn-teal btn-full" onclick="closeModal('m-confirmed')">Done</button>
+  </div>
+</div>
+
+<!-- ISLAND SWITCHER -->
+<div class="modal-overlay" id="m-island">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:14px;">Switch Island</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;">
+      <div onclick="switchIsland('SXM','St. Maarten','🏝️')" style="border:2px solid var(--teal);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;background:#e0f7f6;"><div style="font-size:22px;">🏝️</div><div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:4px;">St. Maarten</div></div>
+      <div onclick="switchIsland('EUX','Statia','🌋')" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;"><div style="font-size:22px;">🌋</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Statia</div></div>
+      <div onclick="switchIsland('SAB','Saba','⛰️')" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;"><div style="font-size:22px;">⛰️</div><div style="font-size:12px;font-weight:700;margin-top:4px;">Saba</div></div>
+      <div onclick="switchIsland('SKB','St. Kitts','🌴')" style="border:0.5px solid var(--border);border-radius:var(--rs);padding:13px;text-align:center;cursor:pointer;"><div style="font-size:22px;">🌴</div><div style="font-size:12px;font-weight:700;margin-top:4px;">St. Kitts</div></div>
+    </div>
+    <button class="btn btn-outline btn-full" onclick="closeModal('m-island')">Cancel</button>
+  </div>
+</div>
+
+<!-- QR CODE -->
+<div class="modal-overlay" id="m-qr">
+  <div class="modal-sheet" style="text-align:center;">
+    <div class="modal-handle"></div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Your Deal QR Code</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Show this at the venue to redeem</div>
+    <div style="width:130px;height:130px;background:white;border:1.5px solid var(--border);border-radius:var(--r);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;padding:10px;">
+      <svg width="100" height="100" viewBox="0 0 50 50" fill="var(--navy)">
+        <rect x="2" y="2" width="18" height="18" rx="2" fill="none" stroke="var(--navy)" stroke-width="2"/><rect x="6" y="6" width="10" height="10"/>
+        <rect x="30" y="2" width="18" height="18" rx="2" fill="none" stroke="var(--navy)" stroke-width="2"/><rect x="34" y="6" width="10" height="10"/>
+        <rect x="2" y="30" width="18" height="18" rx="2" fill="none" stroke="var(--navy)" stroke-width="2"/><rect x="6" y="34" width="10" height="10"/>
+        <rect x="30" y="30" width="6" height="6"/><rect x="42" y="30" width="6" height="6"/>
+        <rect x="30" y="42" width="6" height="6"/><rect x="42" y="42" width="6" height="6"/>
+        <rect x="22" y="2" width="4" height="4"/><rect x="22" y="10" width="4" height="4"/>
+        <rect x="22" y="20" width="4" height="4"/><rect x="22" y="30" width="4" height="4"/>
+      </svg>
+    </div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px;">SURF30</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Valid until June 14, 2026</div>
+    <button class="btn btn-teal btn-full" onclick="closeModal('m-qr')">Done</button>
+  </div>
+</div>
+
+<!-- AI TOOL -->
+<div class="modal-overlay" id="m-ai">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:3px;" id="ai-title">✨ AI Content Tool</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">AI-generated · Goes to admin review before publishing</div>
+    <div class="form-group"><label class="form-label">Brief / Topic</label><textarea class="form-input" id="ai-input" rows="2" placeholder="Describe what you want to create..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div><label class="form-label">Tone</label><select class="form-input" style="font-size:12px;"><option>Caribbean / Local</option><option>Tourist-friendly</option><option>Professional</option><option>Casual</option></select></div>
+      <div><label class="form-label">Island</label><select class="form-input" style="font-size:12px;" id="ai-island-sel"><option>SXM</option><option>EUX</option><option>SAB</option><option>SKB</option></select></div>
+    </div>
+    <button class="btn btn-navy btn-full" id="ai-btn" onclick="runAI()">✨ Generate with AI →</button>
+    <div id="ai-out" style="display:none;margin-top:12px;background:var(--light);border-radius:var(--rs);padding:12px;font-size:12px;line-height:1.7;border-left:3px solid var(--teal);"></div>
+    <div id="ai-loading" style="display:none;margin-top:12px;text-align:center;padding:16px;">
+      <div style="font-size:13px;color:var(--muted);" id="ai-loading-text">Generating with AI...</div>
+      <div style="margin-top:10px;height:4px;background:var(--light);border-radius:2px;overflow:hidden;"><div id="ai-progress" style="height:100%;background:var(--teal);border-radius:2px;width:0%;transition:width 0.3s;"></div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button id="ai-approve-btn" class="btn btn-teal" style="flex:1;display:none;font-size:12px;" onclick="showToast('Sent to review queue ✓');closeModal('m-ai');">Send to Review ✓</button>
+      <button class="btn btn-outline" style="flex:1;font-size:12px;" onclick="closeModal('m-ai')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+</div>
+</div>
+
+<script>
+const screenMap={home:'s-home',news:'s-news',dine:'s-dine',explore:'s-explore',profile:'s-profile',stay:'s-stay',events:'s-events',deals:'s-deals',melee:'s-melee',biz:'s-biz',admin:'s-admin',onboard:'s-onboard','rest-detail':'s-rest-detail','stay-detail':'s-stay-detail',inbox:'s-inbox',saved:'s-saved'};
+let cur='s-onboard';
+
+function go(key){
+  const id=screenMap[key];if(!id)return;
+  const prev=document.getElementById(cur);
+  const next=document.getElementById(id);
+  if(!next||cur===id)return;
+  prev.classList.remove('active');
+  next.classList.add('active');
+  next.classList.remove('slide-in','slide-back');
+  void next.offsetWidth;
+  next.classList.add('slide-in');
+  if(next.querySelector('.scroll-content'))next.querySelector('.scroll-content').scrollTop=0;
+  cur=id;
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});
+});
+
+function submitBooking(){closeModal('m-booking');setTimeout(()=>openModal('m-confirmed'),180);}
+
+let currentIsland={code:'SXM',name:'St. Maarten',emoji:'🏝️'};
+function switchIsland(code,name,emoji){
+  currentIsland={code,name,emoji};
+  document.querySelectorAll('#hdr-code,.cur-island').forEach(el=>el.textContent=code);
+  document.getElementById('sb-island').textContent=`${code} · 84°F ☀️`;
+  document.getElementById('home-title').textContent=`What's Up, ${code}? ${emoji}`;
+  closeModal('m-island');showToast(`Switched to ${name} 🏝️`);
+}
+
+function pickIsland(el){
+  document.querySelectorAll('.ob-island').forEach(o=>{
+    o.style.border='0.5px solid var(--border)';
+    o.style.background='';
+    o.querySelector('div:nth-child(2)').style.color='';
+  });
+  el.style.border='2px solid var(--teal)';
+  el.style.background='#e0f7f6';
+  el.querySelector('div:nth-child(2)').style.color='var(--navy)';
+  const name=el.dataset.name;
+  const emoji=el.dataset.emoji;
+  const code=el.dataset.code;
+  document.getElementById('ob-island-name').textContent=name;
+  currentIsland={code,name,emoji};
+}
+function pickUserType(el,type){
+  el.closest('#user-type-grid').querySelectorAll('.ob-user').forEach(o=>{o.style.border='0.5px solid var(--border)';o.style.background='';});
+  el.style.border='2px solid var(--teal)';el.style.background='#e0f7f6';
+}
+function toggleInterest(el){
+  const on=el.classList.toggle('active-interest');
+  el.style.border=on?'2px solid var(--teal)':'0.5px solid var(--border)';
+  el.style.background=on?'#e0f7f6':'';
+  el.style.fontWeight=on?'700':'600';
+  el.style.color=on?'var(--navy)':'';
+}
+
+document.querySelectorAll('.filter-row').forEach(row=>{
+  row.querySelectorAll('.pill').forEach(p=>{
+    p.addEventListener('click',function(){
+      row.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+});
+
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function submitMelee(){
+  const inp=document.getElementById('melee-input');
+  if(!inp.value.trim()){showToast('Please enter something first!');return;}
+  inp.value='';showToast('Submitted! AI is reviewing... 🛡️');
+}
+
+const savedData={
+  rest:'<div class="card" onclick="go(\'rest-detail\')"><div style="height:100px;" class="g1"></div><div class="card-body"><h3>Le Pressoir</h3><p>French · Grand Case · ⭐ 4.8</p><div class="card-meta"><span class="badge b-navy">$$$$</span><button class="btn btn-teal" style="margin-left:auto;padding:5px 12px;font-size:11px;border-radius:6px;" onclick="event.stopPropagation();openModal(\'m-booking\')">Reserve</button></div></div></div><div class="card"><div style="height:100px;" class="g4"></div><div class="card-body"><h3>Karakter Beach Bar</h3><p>Caribbean · Simpson Bay · ⭐ 4.6</p></div></div>',
+  stay:'<div class="card" onclick="go(\'stay-detail\')"><div style="height:100px;" class="g8"></div><div class="card-body"><h3>Oceanview Villa</h3><p>Orient Bay · ⭐ 4.9 · $250/night</p></div></div>',
+  events:'<div class="card"><div style="height:100px;" class="g2"></div><div class="card-body"><h3>Sunset DJ Night</h3><p>Tonight · Maho Beach · Free</p></div></div>',
+  deals:'<div class="deal-card" onclick="openModal(\'m-qr\')"><div class="deal-icon" style="background:#e0f7f6;">🏄</div><div style="flex:1;"><h4 style="font-size:13px;font-weight:700;">Surf Lessons</h4><p style="font-size:11px;color:var(--muted);">Orient Bay</p></div><div style="font-size:22px;font-weight:700;color:var(--coral);">30%</div></div>'
+};
+function switchSavedTab(tab){
+  document.querySelectorAll('.saved-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('stab-'+tab).classList.add('active');
+  document.getElementById('saved-content').innerHTML=savedData[tab]||'<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">Nothing saved yet.</p>';
+}
+
+const aiPrompts={
+  news:{title:'✍️ Write News Article',placeholder:'e.g. New ferry terminal opens at Oyster Pond...'},
+  event:{title:'🎉 Draft Event Listing',placeholder:'e.g. Carnival preview night at Maho Beach Saturday...'},
+  push:{title:'📲 Push Notification',placeholder:'e.g. Tonight\'s best event or deal...'},
+  restaurant:{title:'🍽️ Restaurant Bio',placeholder:'e.g. French restaurant in Grand Case, plantation house...'},
+  deal:{title:'🏷️ Write Deal Copy',placeholder:'e.g. 30% off surf lessons at Orient Bay this week...'},
+  melee:{title:'🌶️ Moderate Submission',placeholder:'Paste the Dr. Melee submission here...'}
+};
+let curAIType='news';
+function openAI(type){
+  curAIType=type;
+  const cfg=aiPrompts[type];
+  document.getElementById('ai-title').textContent=cfg.title;
+  document.getElementById('ai-input').placeholder=cfg.placeholder;
+  document.getElementById('ai-input').value='';
+  document.getElementById('ai-out').style.display='none';
+  document.getElementById('ai-loading').style.display='none';
+  document.getElementById('ai-approve-btn').style.display='none';
+  document.getElementById('ai-btn').textContent='✨ Generate with AI →';
+  document.getElementById('ai-btn').disabled=false;
+  openModal('m-ai');
+}
+
+async function runAI(){
+  const input=document.getElementById('ai-input').value.trim();
+  const island=document.getElementById('ai-island-sel').value;
+  const btn=document.getElementById('ai-btn');
+  const out=document.getElementById('ai-out');
+  const loading=document.getElementById('ai-loading');
+  const prog=document.getElementById('ai-progress');
+
+  btn.disabled=true;btn.textContent='⏳ Thinking...';
+  out.style.display='none';loading.style.display='block';
+  prog.style.width='0%';
+  let pct=0;const progInt=setInterval(()=>{pct=Math.min(pct+Math.random()*12,88);prog.style.width=pct+'%';},200);
+
+  const systemPrompts={
+    news:`You are a news editor for What's Up? Caribbean, a digital media and discovery platform serving ${island}. Write a short, engaging news article (3–4 sentences) in a clean, modern journalistic style. Include a headline. Be concise and factual. Caribbean-relevant tone.`,
+    event:`You are an event listings editor for What's Up? Caribbean on ${island}. Write a compelling event listing (3–4 lines): event name, date, location, what to expect, and any ticket info. Fun and inviting tone.`,
+    push:`You are a push notification copywriter for What's Up? Caribbean on ${island}. Write one punchy push notification (max 2 lines). Make it urgent and compelling. Caribbean flavor.`,
+    restaurant:`You are a content writer for What's Up? Caribbean on ${island}. Write an elegant restaurant bio (4–5 sentences) that captures the atmosphere, cuisine, and experience. Premium, inviting tone.`,
+    deal:`You are a deals copywriter for What's Up? Caribbean on ${island}. Write a short, exciting deal description (2–3 lines) including the offer, how to redeem, and expiry. Energetic tone.`,
+    melee:`You are an AI content moderator for Dr. Melee, the anonymous Caribbean commentary section of What's Up? Caribbean. Review the submission. Score it 0–100 for safety. Flag any issues. Recommend: Approve / Approve with edits / Reject. Keep it brief.`
+  };
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompts[curAIType],
+        messages:[{role:'user',content:input||`Generate a ${curAIType} for ${island} about: ${curAIType==='restaurant'?'a local Caribbean restaurant':curAIType==='event'?'a beach party event this weekend':'the latest local update'}`}]
+      })
+    });
+    const data=await resp.json();
+    clearInterval(progInt);prog.style.width='100%';
+    setTimeout(()=>{
+      loading.style.display='none';
+      out.style.display='block';
+      out.textContent=data.content?.[0]?.text||'Content generated successfully.';
+      document.getElementById('ai-approve-btn').style.display='block';
+      btn.textContent='🔄 Regenerate';btn.disabled=false;
+    },300);
+  }catch(e){
+    clearInterval(progInt);
+    const fallbacks={news:`📰 **Breaking: Ferry Terminal Opens on ${island}**\n\nA new state-of-the-art ferry terminal has officially opened, marking a major milestone for inter-island connectivity. The facility is expected to boost tourism and commerce significantly this season.`,event:`🎉 Carnival Preview Night — ${island}\n\nJoin us this Saturday for an unforgettable preview of Carnival 2026! Steel pan performances, traditional costumes, local food vendors, and surprise acts. Free entry for all. Gates open at 6pm.`,push:`🔥 Tonight only on ${island}: 2-for-1 cocktails at Sunset Bar. 5pm–7pm. Show this notification at the door!`,restaurant:`Nestled in the heart of ${island}, this celebrated restaurant offers an extraordinary dining journey through Caribbean-inspired cuisine. With locally sourced ingredients, award-winning chefs, and breathtaking ambiance, every meal here is an unforgettable experience.`,deal:`🏷️ EXCLUSIVE DEAL: 25% off watersports activities this weekend only on ${island}! Book via What's Up? and use code ISLAND25 at checkout. Valid Sat–Sun only.`,melee:`🛡️ AI Moderation Report\nScore: 78/100\nStatus: RECOMMENDED FOR APPROVAL\nNo personal identifiers detected. Content is community-relevant and within acceptable humor guidelines. Minor tone adjustment suggested before publishing.`};
+    clearInterval(progInt);prog.style.width='100%';
+    setTimeout(()=>{
+      loading.style.display='none';
+      out.style.display='block';
+      out.textContent=fallbacks[curAIType];
+      document.getElementById('ai-approve-btn').style.display='block';
+      btn.textContent='🔄 Regenerate';btn.disabled=false;
+    },300);
+  }
+}
+</script>
+</body>
+</html>
